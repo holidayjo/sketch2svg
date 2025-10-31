@@ -11,14 +11,14 @@ NDJSON_INPUT_DIR = '/mnt/Documents/Dad/dataset/quick_draw/raw'
 # 2. Base directory for all processed output
 BASE_OUTPUT_DIR = 'samples/quick_draw_dataset'
 
-# 3. List of .ndjson files to process
-# Add the filenames of all categories you want to process here.
-FILES_TO_PROCESS = [
-    'The Eiffel Tower.ndjson',
-    'cooler.ndjson',
-    'calendar.ndjson',
-    'firetruck.ndjson',
-    'harp.ndjson']
+# # 3. List of .ndjson files to process
+# # Add the filenames of all categories you want to process here.
+# FILES_TO_PROCESS = [
+#     'The Eiffel Tower.ndjson',
+#     'cooler.ndjson',
+#     'calendar.ndjson',
+#     'firetruck.ndjson',
+#     'harp.ndjson']
 
 # 4. PNG settings
 PNG_SIZE     = 256  # 256x256 is a standard size for CNN inputs
@@ -157,6 +157,18 @@ def main():
     total_success_count = 0
     total_error_count   = 0
     
+    try:
+        print(f"Scanning for .ndjson files in: '{NDJSON_INPUT_DIR}'")
+        all_files_in_dir = os.listdir(NDJSON_INPUT_DIR)
+        FILES_TO_PROCESS = [f for f in all_files_in_dir if f.endswith('.ndjson')]
+        
+        if not FILES_TO_PROCESS:
+            print("  Error: No .ndjson files found. Exiting.")
+            return
+    except FileNotFoundError:
+        print(f"  Error: Input directory not found: '{NDJSON_INPUT_DIR}'. Exiting.")
+        return
+    
     print(f"Starting paired data generation for {len(FILES_TO_PROCESS)} file(s)...")
     print(f"Base Output Directory: '{BASE_OUTPUT_DIR}'")
     
@@ -165,10 +177,10 @@ def main():
         
         print(f"\n--- Processing file: '{file_name}' ---")
 
-        if not os.path.exists(ndjson_file_path):
-            print(f"  Error: Input file not found at '{ndjson_file_path}'")
-            print("  Skipping this file.")
-            continue
+        # if not os.path.exists(ndjson_file_path):
+        #     print(f"  Error: Input file not found at '{ndjson_file_path}'")
+        #     print("  Skipping this file.")
+        #     continue
 
         # --- Generate dynamic output paths ---
         # "The Eiffel Tower.ndjson" -> "the_eiffel_tower"
@@ -177,6 +189,11 @@ def main():
         
         png_output_dir = os.path.join(BASE_OUTPUT_DIR, f"{class_name_formatted}_png")
         npy_output_dir = os.path.join(BASE_OUTPUT_DIR, f"{class_name_formatted}_processed")
+        
+        # Check if the folder exists AND is not empty
+        if os.path.exists(png_output_dir) and os.listdir(png_output_dir):
+            print(f"  Output folder '{png_output_dir}' already exists and is not empty. Skipping this file.")
+            continue # This skips to the next file in FILES_TO_PROCESS
         
         # Create both output directories
         os.makedirs(png_output_dir, exist_ok=True)
