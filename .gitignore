@@ -1,1 +1,3 @@
-/samples/
+*.ndjson
+samples/
+output/

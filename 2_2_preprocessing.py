@@ -6,7 +6,7 @@ import time
 
 # --- Configuration ---
 # 1. Directory containing your .ndjson files
-NDJSON_INPUT_DIR = 'samples'
+NDJSON_INPUT_DIR = '/mnt/Documents/Dad/dataset/quick_draw/raw'
 
 # 2. Base directory for all processed output
 BASE_OUTPUT_DIR = 'samples/quick_draw_dataset'
