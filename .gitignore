@@ -1,3 +1,6 @@
 *.ndjson
 samples/
 output/
+inference_output/
+model_checkpoints/
+runs/
